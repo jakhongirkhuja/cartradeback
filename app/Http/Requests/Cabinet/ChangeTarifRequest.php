@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\UserAuth;
+namespace App\Http\Requests\Cabinet;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserForgetPasswordRequest extends FormRequest
+class ChangeTarifRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,8 +22,7 @@ class UserForgetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phoneNumber' => 'required|size:12',
-            'verify_number' => 'required|max:50',
+            //
         ];
     }
 }

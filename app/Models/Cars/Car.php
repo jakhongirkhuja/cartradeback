@@ -3,6 +3,7 @@
 namespace App\Models\Cars;
 
 use App\Models\Auksion;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,5 +44,10 @@ class Car extends Model
     public function images()
     {
         return $this->hasMany(CarImage::class);
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

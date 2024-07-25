@@ -23,7 +23,7 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             'email' => 'email|exists:users,email|max:50',
-            'phoneNumber' => 'required|max:50',
+            'phoneNumber' => 'required|size:12',
             'name' => 'required|max:150',
             'verify_number'=>'required|size:6',
             'familyName' => 'required|max:150',

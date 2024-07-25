@@ -31,7 +31,7 @@ class ReviewsController extends Controller
             return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
         } 
         try {
-            if(file_exists(public_path('/files/reviews/'.$reviews->avatar))){
+            if($reviews->avatar && file_exists(public_path('/files/reviews/'.$reviews->avatar))){
                 unlink(public_path('/files/reviews/'.$reviews->avatar));
             }
             $reviews->delete();

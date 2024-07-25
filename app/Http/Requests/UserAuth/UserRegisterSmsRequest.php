@@ -22,7 +22,7 @@ class UserRegisterSmsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phoneNumber' => 'required|max:50',
+            'phoneNumber' => 'required|size:12',
         ];
     }
 }

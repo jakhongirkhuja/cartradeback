@@ -19,6 +19,7 @@ Route::post('/reset-password',[UserAuthController::class, 'resetPassword']);
 
 Route::get('/reviews',[ReviewsController::class, 'reviews']);
 Route::post('/reviews',[ReviewsController::class, 'reviewsPost']);
+Route::post('/reviews/delete/{id}',[ReviewsController::class, 'reviewsDelete']);
 
 Route::get('/filters',[IndexController::class, 'filters']);
 Route::get('/auksion',[IndexController::class, 'auksion']);

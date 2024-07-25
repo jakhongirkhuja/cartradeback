@@ -11,7 +11,7 @@ class ReviewsPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,7 @@ class ReviewsPostRequest extends FormRequest
             'fullname'=>'required|min:5',
             'email'=>'required|email',
             'body'=>'required|min:100',
+            'avatar'=>'image|mimes:jpeg,png,jpg|max:2048'
         ];
     }
 }

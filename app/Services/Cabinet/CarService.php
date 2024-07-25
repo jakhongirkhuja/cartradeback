@@ -69,7 +69,13 @@ class CarService {
         return response()->json($car, Response::HTTP_CREATED);
     }
     public function carEdit($userData, $id){
-        $car = Car::find($id);
+        $user = auth()->user();
+        if($user->role=='admin'){
+            $car = Car::find($id);
+        }else{
+            $car = Car::where('id',$id)->where('user_id', $user->id)->first();
+        }
+        
         
         if(!$car){
             $lang['ru']= 'Не найден';
@@ -119,14 +125,19 @@ class CarService {
             $car->save();
             
         } catch (\Throwable $th) {
-            $lang['ru']= 'Ошибка';
-            $lang['uz']= 'Xatolik';
+            $lang['ru']= 'Ошибка: '.$th->getMessage();
+            $lang['uz']= 'Xatolik: '.$th->getMessage();
             return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         return response()->json($car, Response::HTTP_CREATED);
     }
     public function carDelete( $id){
-        $car = Car::find($id);
+        $user = auth()->user();
+        if($user->role=='admin'){
+            $car = Car::find($id);
+        }else{
+            $car = Car::where('id',$id)->where('user_id', $user->id)->first();
+        }
         if(!$car){
             $lang['ru']= 'Не найден';
             $lang['uz']= 'Topilmadi';
@@ -153,29 +164,41 @@ class CarService {
         }
     }
     public function carImageDelete( $id){
-        $image = CarImage::find($id);
+        $image = CarImage::with('car.user')->find($id);
+        
         if(!$image){
             $lang['ru']= 'Не найден';
             $lang['uz']= 'Topilmadi';
             return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
         } 
-        try {
-            
-            if(file_exists(public_path('/files/cars/'.$image->image))){
-                unlink(public_path('/files/cars/'.$image->image));
+        if(auth()->user()->role=='admin' || $image->car->user->id==auth()->user()->id){
+            try {
+                
+                if(file_exists(public_path('/files/cars/'.$image->image))){
+                    unlink(public_path('/files/cars/'.$image->image));
+                }
+                $image->delete();
+                $lang['ru']= 'Удален';
+                $lang['uz']= 'O`chirildi';
+                return response()->json($lang, Response::HTTP_OK);
+            } catch (\Throwable $th) {
+                $lang['ru']= 'Ошибка';
+                $lang['uz']= 'Xatolik';
+                return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
             }
-            $image->delete();
-            $lang['ru']= 'Удален';
-            $lang['uz']= 'O`chirildi';
-            return response()->json($lang, Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            $lang['ru']= 'Ошибка';
-            $lang['uz']= 'Xatolik';
-            return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+        }else{
+            $lang['ru']= 'Отказано в доступе';
+            $lang['uz']= 'Ruxsat berilmadi';
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_UNAUTHORIZED);
         }
     }
     public function carImageAdd( $userData, $id){
-        $car = Car::find($id);
+        $user = auth()->user();
+        if($user->role=='admin'){
+            $car = Car::find($id);
+        }else{
+            $car = Car::where('id',$id)->where('user_id', $user->id)->first();
+        }
         if(!$car){
             $lang['ru']= 'Не найден';
             $lang['uz']= 'Topilmadi';

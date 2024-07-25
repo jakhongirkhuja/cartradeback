@@ -9,6 +9,7 @@ use App\Models\Cars\CarModel;
 use App\Models\Cars\FuilType;
 use App\Models\Cars\Mark;
 use App\Models\Cars\Transmission;
+use App\Models\Tarif;
 use Illuminate\Support\Facades\Http;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -121,6 +122,30 @@ class IndexController extends Controller
             $bodyType->name = json_encode($kuz);
             $bodyType->save();
         }
+        $tarif1['title'] =  'Депозит Лайт';
+        $arr = ['Более 200 автомобилей каждый день которые не видят  автодилеры без депозита.','Доступ к экспресс и длительным к аукционам.','Покупка машин до 30.000 $','Возможность купить машину по блиц цене.','Покупка не более одной машины.'];
+        $tarif1['body'] = json_encode($arr);
+        $tarif1['price'] = '1000000';
+        $tarif2['title'] = 'Депозит Стандарт';
+        $arr = ['Доступ к экспресс и длительным к аукционам.',
+        'Возможность покупать автомобиль по любой стоимости.',
+        'Возможность купить автомобиль по блиц-цене.',
+        'Покупка неограниченного количества машин.',
+        'Низкая конкуренция между автодилерами.',
+        'Доступ к неограниченному количеству автомобилей.',
+    ];
+        $tarif2['body'] = json_encode($arr);
+        $tarif2['price'] = '2000000';
+        $tarif = new Tarif();
+        $tarif->title = $tarif1['title'];
+        $tarif->body = $tarif1['body'];
+        $tarif->price = $tarif1['price'];
+        $tarif->save();
+        $tarif = new Tarif();
+        $tarif->title = $tarif2['title'];
+        $tarif->body = $tarif2['body'];
+        $tarif->price = $tarif2['price'];
+        $tarif->save();
     }
     public function index(){
         

@@ -146,9 +146,12 @@ class UserService {
             return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
         }
         if (Hash::check($userData['password'], $user->password)) {
+            $lang2['ru']= 'Авторизация успешно пройдена';
+            $lang2['uz']= 'Avtorizatsiya muvaffaqiyatli yakunlandi';
             $token = $user->createToken('myapptoken',['*'], Carbon::now()->addDays(90))->plainTextToken;
             $response['user']= $user;
             $response['token'] = $token;
+            $response['response'] = $lang2;
             $lang['message']  = $response;
             return response()->json($lang);
         }else{

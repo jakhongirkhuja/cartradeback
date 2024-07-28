@@ -110,6 +110,7 @@ class UserService {
             $user->phoneNumber = $userData['phoneNumber'];
             $user->verify_number = $userPhone->verify_number;
             $user->verify_number_at = Carbon::now();
+            $user->role = $userData['role']==1? 'dealer' : 'client';
             $user->password = Hash::make($userData['password']);
             $user->save();
             $userPhone->status = 1;

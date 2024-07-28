@@ -45,6 +45,9 @@ class CarPostRequest extends FormRequest
             'engine'=>'required',
             'carbody'=>'required',
             'time_end'=>'required',
+            'time_start'=>'required',
+            'body'=>'required',
+            'functions'=>'required',
         ];
     }
 }

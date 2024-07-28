@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
             $table->text('title')->index();
+            $table->longText('body');
+            $table->jsonb('functions')->nullable();
             $table->text('start_price')->default(0)->index();
             $table->text('buy_price')->default(0)->index();
             $table->text('images')->nullable();

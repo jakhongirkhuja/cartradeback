@@ -21,6 +21,9 @@ Route::get('/reviews',[ReviewsController::class, 'reviews']);
 Route::post('/reviews',[ReviewsController::class, 'reviewsPost']);
 Route::post('/reviews/delete/{id}',[ReviewsController::class, 'reviewsDelete']);
 
+Route::get('/loadMark',[IndexController::class, 'loadMark']);
+Route::get('/loadModel/{mark_id}',[IndexController::class, 'loadModel']);
 Route::get('/filters',[IndexController::class, 'filters']);
 Route::get('/auksion',[IndexController::class, 'auksion']);
 Route::post('/auksion-bet',[IndexController::class, 'auksionBet']);
+Route::post('/enquery/{type}',[IndexController::class, 'enquery']);

@@ -13,16 +13,16 @@ class Car extends Model
    
     public function aukstion()
     {
-        return $this->belongsTo(Auksion::class);
+        return $this->belongsTo(Auksion::class,'auksion_id');
     }
     
     public function color()
     {
-        return $this->belongsTo(CarColor::class);
+        return $this->belongsTo(CarColor::class,'car_color_id');
     }
     public function condation()
     {
-        return $this->belongsTo(CarCondition::class);
+        return $this->belongsTo(CarCondition::class,'car_condtion_id');
     }
     public function carModel()
     {
@@ -30,15 +30,18 @@ class Car extends Model
     }
     public function carMark()
     {
-        return $this->belongsTo(Mark::class);
+        return $this->belongsTo(Mark::class,'mark_id');
     }
     public function carBodyType()
     {
-        return $this->belongsTo(BodyType::class);
+        return $this->belongsTo(BodyType::class,'body_type_id');
     }
     public function carFuilType()
     {
-        return $this->belongsTo(FuilType::class);
+        return $this->belongsTo(FuilType::class,'fuil_type_id');
+    }
+    public function transmission(){
+        return $this->belongsTo(Transmission::class,'transmission_id');
     }
     
     public function images()

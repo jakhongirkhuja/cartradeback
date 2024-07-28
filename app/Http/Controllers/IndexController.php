@@ -122,11 +122,11 @@ class IndexController extends Controller
             $bodyType->name = json_encode($kuz);
             $bodyType->save();
         }
-        $tarif1['title'] =  'Депозит Лайт';
+        $tarif1['name'] =  'Депозит Лайт';
         $arr = ['Более 200 автомобилей каждый день которые не видят  автодилеры без депозита.','Доступ к экспресс и длительным к аукционам.','Покупка машин до 30.000 $','Возможность купить машину по блиц цене.','Покупка не более одной машины.'];
         $tarif1['body'] = json_encode($arr);
         $tarif1['price'] = '1000000';
-        $tarif2['title'] = 'Депозит Стандарт';
+        $tarif2['name'] = 'Депозит Стандарт';
         $arr = ['Доступ к экспресс и длительным к аукционам.',
         'Возможность покупать автомобиль по любой стоимости.',
         'Возможность купить автомобиль по блиц-цене.',
@@ -137,19 +137,20 @@ class IndexController extends Controller
         $tarif2['body'] = json_encode($arr);
         $tarif2['price'] = '2000000';
         $tarif = new Tarif();
-        $tarif->title = $tarif1['title'];
+        $tarif->name = $tarif1['name'];
         $tarif->body = $tarif1['body'];
         $tarif->price = $tarif1['price'];
         $tarif->save();
         $tarif = new Tarif();
-        $tarif->title = $tarif2['title'];
+        $tarif->name = $tarif2['name'];
         $tarif->body = $tarif2['body'];
         $tarif->price = $tarif2['price'];
         $tarif->save();
     }
     public function index(){
-        
-        dd(CarColor::all());
+        // $this->saveOthers();
+        // $this->saveCar();
+       
         return response()->json('404');
     }
 }

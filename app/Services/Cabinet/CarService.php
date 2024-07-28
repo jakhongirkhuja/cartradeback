@@ -25,6 +25,7 @@ class CarService {
             $auksion = new Auksion();
             $auksion->user_id = auth()->user()->id;
             $auksion->time_end = Carbon::parse($userData['time_end']);
+            $auksion->time_start = Carbon::parse($userData['time_start']);
             $auksion->status = false;
             $auksion->save();
             $car = new Car();
@@ -50,6 +51,8 @@ class CarService {
             $car->salon =(int)$userData['salon'];
             $car->engine =(int) $userData['engine'];
             $car->carbody = (int)$userData['carbody'];
+            $car->body = $userData['body'];
+            $car->functions = $userData['functions'];
             $car->status = true;
             $car->save();
 
@@ -134,9 +137,9 @@ class CarService {
     public function carDelete( $id){
         $user = auth()->user();
         if($user->role=='admin'){
-            $car = Car::find($id);
+            $car = Car::with('aukstion')->find($id);
         }else{
-            $car = Car::where('id',$id)->where('user_id', $user->id)->first();
+            $car = Car::with('aukstion')->where('id',$id)->where('user_id', $user->id)->first();
         }
         if(!$car){
             $lang['ru']= 'Не найден';
@@ -153,7 +156,10 @@ class CarService {
                     $image->delete();
                 }
             }
+            $auksion  = $car->aukstion;
             $car->delete();
+            if($auksion) $auksion->delete();
+            
             $lang['ru']= 'Удален';
             $lang['uz']= 'O`chirildi';
             return response()->json($lang, Response::HTTP_OK);

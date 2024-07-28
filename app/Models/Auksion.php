@@ -12,6 +12,6 @@ class Auksion extends Model
     
     public function car()
     {
-        return $this->hasOne(Car::class);
+        return $this->hasOne(Car::class, 'auksion_id','id');
     }
 }

@@ -16,9 +16,9 @@ class CarController extends Controller
         
         if($request->id){
             
-            $car = Car::with('images')->where('user_id', auth()->user()->id)->find($request->id);
+            $car = Car::with('images','aukstion','carMark','carModel','color','condation','carBodyType','carFuilType','transmission')->where('user_id', auth()->user()->id)->find($request->id);
         }else{
-            $car = Car::with('images')->where('user_id', auth()->user()->id)->latest()->get();
+            $car = Car::with('images','aukstion','carMark','carModel','color','condation','carBodyType','carFuilType','transmission')->where('user_id', auth()->user()->id)->latest()->paginate(50);
         }
         
         return response()->json($car);

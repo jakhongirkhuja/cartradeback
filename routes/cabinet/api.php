@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('cabinet')->group(function () {
     Route::prefix('auksion')->group(function () {
-        // Route::get('',[AuksionController::class, 'auksion']);
+        Route::get('',[AuksionController::class, 'auksion']);
         // Route::post('',[AuksionController::class, 'auksionPost']);
         // Route::post('edit/{id}',[AuksionController::class, 'auksionEdit']);
         // Route::post('delete/{id}',[AuksionController::class, 'auksionDelete']);

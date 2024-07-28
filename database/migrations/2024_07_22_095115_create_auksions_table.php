@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('auksions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->timestamp('time_start');
             $table->timestamp('time_end');
             $table->text('current_price')->default(0)->index();
             $table->boolean('status')->default(false);

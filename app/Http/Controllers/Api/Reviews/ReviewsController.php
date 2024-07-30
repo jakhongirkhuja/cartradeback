@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 class ReviewsController extends Controller
 {
     public function reviews(){
-        $reviews = Review::paginate(50);
+        $reviews = Review::witht('user')->paginate(50);
         return response()->json($reviews, Response::HTTP_OK);
     }
     public function reviewsPost(ReviewsPostRequest $request, ReviewService $reviewService){

@@ -20,6 +20,8 @@ class ReviewService {
             }
             if(auth()->user()){
                 $reviews->user_id = auth()->user()->id;
+            }else{
+                
             }
             $reviews->fullName = $userData['fullname'];
             $reviews->email = $userData['email'];

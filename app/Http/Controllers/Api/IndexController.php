@@ -21,10 +21,16 @@ use Illuminate\Support\Facades\Validator;
 
 class IndexController extends Controller
 {
-    public function auksion(){
-        $auksions = Auksion::with('car.images','car.color','car.condation','car.carModel','car.carMark',
-        'car.carBodyType', 'car.carFuilType', 'car.transmission'
-        )->where('status', false)->latest()->paginate(50);
+    public function auksion(Request $request){
+        if($request->id){
+            $auksions = Auksion::with('car.images','car.color','car.condation','car.carModel','car.carMark',
+            'car.carBodyType', 'car.carFuilType', 'car.transmission'
+            )->where('status', false)->find($request->id);
+        }else{
+            $auksions = Auksion::with('car.images','car.color','car.condation','car.carModel','car.carMark',
+            'car.carBodyType', 'car.carFuilType', 'car.transmission'
+            )->where('status', false)->latest()->paginate(50);
+        }
         return response()->json($auksions);
     }
     public function loadMark(){

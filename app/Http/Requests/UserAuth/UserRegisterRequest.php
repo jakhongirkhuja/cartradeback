@@ -27,6 +27,7 @@ class UserRegisterRequest extends FormRequest
             'name' => 'required|max:150',
             'verify_number'=>'required|size:6',
             'familyName' => 'required|max:150',
+            'role'=>'required',
             'password' => [
                 'required',
                 'min:6',

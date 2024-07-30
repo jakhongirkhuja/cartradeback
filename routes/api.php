@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+Route::get('/user/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete();
+    return response()->json('success');
+})->middleware('auth:sanctum');
 
 Route::post('/register',[UserAuthController::class, 'register']);
 Route::post('/register/send-sms',[UserAuthController::class, 'registerSendSms']);

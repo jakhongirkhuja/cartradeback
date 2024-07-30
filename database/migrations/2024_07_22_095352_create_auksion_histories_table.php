@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('auksion_histories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('auksion_id');
-            $table->text('bid_price');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('auksion_id')->index();
+            $table->bigInteger('bid_price')->index();
+            $table->unsignedBigInteger('user_id')->index();
             $table->timestamps();
         });
     }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->double('balance', 15, 8)->default(0);
+            $table->boolean('balance_sign')->default(true);
             $table->integer('verify_number')->nullable();
             $table->timestamp('verify_number_at')->nullable();
             $table->string('token')->nullable();

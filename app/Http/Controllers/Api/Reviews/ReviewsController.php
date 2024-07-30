@@ -9,16 +9,27 @@ use App\Models\Review;
 use App\Services\Reviews\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ReviewsController extends Controller
 {
     public function reviews(){
-        $reviews = Review::witht('user')->paginate(50);
+        $reviews = Review::with('user')->paginate(50);
         return response()->json($reviews, Response::HTTP_OK);
     }
     public function reviewsPost(ReviewsPostRequest $request, ReviewService $reviewService){
         
-        return $reviewService->reviewPost($request->validated());
+        $user = false;
+        if(isset($request->header()['authorization'])){
+            $token = PersonalAccessToken::findToken(explode(' ',$request->header()['authorization'][0])[1]);
+            if($token){
+                $user= $token->tokenable;
+               
+            }
+           
+        }
+       
+        return $reviewService->reviewPost($request->validated(),$user);
     }
     public function reviewsEdit(ReviewsPostRequest $request, ReviewService $reviewService, $id){
         return $reviewService->reviewEdit($request->validated(),$id);

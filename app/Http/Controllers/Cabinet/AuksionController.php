@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Cabinet;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auksion\AuksionBetRequest;
+use App\Http\Requests\Auksion\AuksionBuyRequest;
 use App\Http\Requests\Auksion\AuksionPostRequest;
 use App\Models\Auksion;
+use App\Models\AuksionHistory;
 use App\Services\Cabinet\AuksionService;
 use Illuminate\Http\Request;
 
@@ -30,5 +33,16 @@ class AuksionController extends Controller
     }
     public function auksionDelete($id, AuksionService $auksion){
         return $auksion->auksionDelete($id);
+    }
+
+
+    public function auksionBet(AuksionBetRequest $request, AuksionService $auksion){
+        return $auksion->auksionBet($request->validated());
+    }
+    public function auksionBuy(AuksionBuyRequest $request, AuksionService $auksion){
+        return $auksion->auksionBuy($request->validated());
+    }
+    public function auksionlastPrice($id){
+        return response()->json(AuksionHistory::select('bid_price')->where('auksion_id',$id)->orderby('bid_price','desc')->first());
     }
 }

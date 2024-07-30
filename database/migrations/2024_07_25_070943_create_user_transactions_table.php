@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('user_transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->index();
+            $table->bigInteger('amount')->default(0);
+            $table->boolean('sign')->default(true);
+            $table->text('service')->nullable();
+            $table->unsignedBigInteger('service_id');
             $table->timestamps();
         });
     }

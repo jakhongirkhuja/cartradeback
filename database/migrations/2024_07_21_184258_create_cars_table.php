@@ -17,8 +17,8 @@ return new class extends Migration
             $table->text('title')->index();
             $table->longText('body');
             $table->jsonb('functions')->nullable();
-            $table->text('start_price')->default(0)->index();
-            $table->text('buy_price')->default(0)->index();
+            $table->bigInteger('start_price')->default(0)->index();
+            $table->bigInteger('buy_price')->default(0)->index();
             $table->text('images')->nullable();
             $table->unsignedBigInteger('mark_id')->index();
             $table->unsignedBigInteger('car_model_id')->index();

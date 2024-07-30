@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('cabinet')->group(function () {
     Route::prefix('auksion')->group(function () {
         Route::get('',[AuksionController::class, 'auksion']);
+        Route::post('bet',[AuksionController::class, 'auksionBet'])->middleware('auth:sanctum');
+        Route::post('buy',[AuksionController::class, 'auksionBuy'])->middleware('auth:sanctum');
+        Route::get('lastPrice/{id}',[AuksionController::class, 'auksionlastPrice']);
         // Route::post('',[AuksionController::class, 'auksionPost']);
         // Route::post('edit/{id}',[AuksionController::class, 'auksionEdit']);
         // Route::post('delete/{id}',[AuksionController::class, 'auksionDelete']);

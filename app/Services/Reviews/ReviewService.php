@@ -11,15 +11,15 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 class ReviewService {
-    public function reviewPost($userData){
+    public function reviewPost($userData,$user){
         try {
             $reviews = new Review();
             if(isset($userData['avatar'])){
                 $avatar = (string) Str::uuid().'-'.Str::random(15).'.'.$userData['avatar']->getClientOriginalExtension();
                 $userData['avatar']->move(public_path('/files/reviews'),$avatar);
             }
-            if(auth()->user()){
-                $reviews->user_id = auth()->user()->id;
+            if($user){
+                $reviews->user_id = $user->id;
             }else{
                 
             }

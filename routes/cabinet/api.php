@@ -16,6 +16,7 @@ Route::prefix('cabinet')->group(function () {
         Route::get('',[AuksionController::class, 'auksion']);
         Route::post('bet',[AuksionController::class, 'auksionBet'])->middleware('auth:sanctum');
         Route::post('buy',[AuksionController::class, 'auksionBuy'])->middleware('auth:sanctum');
+        Route::post('change-status',[AuksionController::class, 'auksionChangeStatus'])->middleware([adminRoleMiddleware::class, 'auth:sanctum']);
         Route::get('lastPrice/{id}',[AuksionController::class, 'auksionlastPrice']);
         // Route::post('',[AuksionController::class, 'auksionPost']);
         // Route::post('edit/{id}',[AuksionController::class, 'auksionEdit']);
@@ -24,6 +25,7 @@ Route::prefix('cabinet')->group(function () {
     Route::prefix('car')->middleware('auth:sanctum')->group(function () {
         Route::get('',[CarController::class, 'car']);
         Route::post('',[CarController::class, 'carPost']);
+        Route::get('bet',[CarController::class, 'carBet']);
         Route::post('edit/{id}',[CarController::class, 'carEdit']);
         Route::post('delete/{id}',[CarController::class, 'carDelete']);
         Route::post('image/add/{id}',[CarController::class, 'carImageAdd']);
@@ -31,14 +33,20 @@ Route::prefix('cabinet')->group(function () {
     });
     Route::post('change-tarif/{id}',[IndexController::class, 'changeTarif'])->middleware(adminRoleMiddleware::class);
     Route::get('tarifs',[IndexController::class, 'tarifs']);
+    Route::prefix('reviews')->middleware('auth:sanctum')->group(function (){
+        Route::post('change-status/{id}',[ReviewsController::class, 'reviewsChangeStatus'])->middleware(adminRoleMiddleware::class);
+        Route::post('delete/{id}',[ReviewsController::class, 'reviewsDelete'])->middleware(adminRoleMiddleware::class);
+    });
+    
     Route::prefix('user')->controller(UserController::class)->middleware('auth:sanctum')->group(function () {
         Route::post('password-change', 'passwordChange');
         Route::post('info-change','infoChange');
 
         Route::middleware(adminRoleMiddleware::class)->group(function(){
-            Route::post('phoneNumber-change','phoneNumberChange');
-            Route::post('user-role-change','userRoleChange');
+            // Route::post('phoneNumber-change','phoneNumberChange');
+            Route::post('user-change-info','userInfoChangeAdmin');
             Route::get('user-list','userListChange');
+            Route::post('user-remove/{id}','userRemove');
             
         });
         

@@ -65,6 +65,66 @@ class UserInfoService {
             return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+    public function userRemove($id){
+        $user = User::find($id);
+        if($user){
+            try {
+                $phoneNumber = PhoneNumber::where('phoneNumber', $user->phoneNumber)->first();
+                if($phoneNumber) $phoneNumber->delete();
+                $user->delete();
+                $lang['ru']= 'Пользователь удален';
+                $lang['uz']= 'Foydalanuvchi o`chirildi';
+                return response()->json($lang, Response::HTTP_OK);
+            } catch (\Throwable $th) {
+                $lang['ru']= 'Ошибка '.$th->getMessage();
+                $lang['uz']= 'Xatolik '.$th->getMessage();
+                return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+        $lang['ru']= 'Пользователь не найден';
+        $lang['uz']= 'Foydalanuvchi topilmadi';
+        return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+    }
+    public function userInfoChangeAdmin($userData){
+        
+        try {
+            
+            $user = User::find($userData['user_id']);
+            if($user){
+                $phoneNumber = User::where('phoneNumber',$userData['phoneNumber'])->where('id','!=',$userData['user_id'] )->first();
+                if($phoneNumber){
+                    $lang['ru']= 'Пользователь с таким номером существует';
+                    $lang['uz']= 'Bunday raqam bilan foydalanuchsi mavjud';
+                    return ErrorHelperResponse::returnError($lang,Response::HTTP_FOUND);
+                }
+                $user->name = $userData['name'];
+                $user->familyName = $userData['familyName'];
+                $user->email = isset($userData['email'])? $userData['email'] : null;
+                $user->role = $userData['role'];
+                $user->balance = (int)$userData['balance'];
+                $user->phoneNumber = (int) $userData['phoneNumber'];
+                $user->status = $userData['status'];
+                if(isset($userData['avatar'])){
+                    $imageName = (string) Str::uuid().'-'.Str::random(15).'.'.$userData['avatar']->getClientOriginalExtension();
+                    $userData['avatar']->move(public_path('/files/user'),$imageName);
+                    if($user->avatar && file_exists(public_path('/files/user/'.$user->avatar))){
+                        unlink(public_path('/files/user/'.$user->avatar));
+                    }
+                    $user->avatar = $imageName;
+                }
+                $user->save();
+                return response()->json($user, Response::HTTP_OK);
+            }
+            $lang['ru']= 'Пользователь не найден';
+            $lang['uz']= 'Foydalanuchsi topilmadi';
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+            
+        } catch (\Throwable $th) {
+            $lang['ru']= 'Ошибка: '.$th->getMessage();
+            $lang['uz']= 'Xatolik: '.$th->getMessage();
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
     public function phoneNumberChange($userData){
         try {
             $user = User::find($userData['user_id']);

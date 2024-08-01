@@ -42,8 +42,10 @@ class CarEditRequest extends FormRequest
             'salon'=>'required',
             'engine'=>'required',
             'carbody'=>'required',
-            'status'=>'required',
             'time_end'=>'required',
+            'time_start'=>'required',
+            'body'=>'required',
+            'functions'=>'required',
         ];
     }
 }

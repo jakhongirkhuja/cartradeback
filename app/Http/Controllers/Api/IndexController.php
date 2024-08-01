@@ -26,12 +26,12 @@ class IndexController extends Controller
         if($request->id){
             $auksions = Auksion::with('car.images','car.color','car.condation','car.carModel','car.carMark',
             'car.carBodyType', 'car.carFuilType', 'car.transmission'
-            )->find($request->id);
+            )->where('status', true)->find($request->id);
             // on production status must set to trur
         }else{
             $auksions = Auksion::with('car.images','car.color','car.condation','car.carModel','car.carMark',
             'car.carBodyType', 'car.carFuilType', 'car.transmission'
-            )->latest()->paginate(50);
+            )->where('status', true)->latest()->paginate(50);
             // on production status must set to trur
         }
         return response()->json($auksions);
@@ -98,10 +98,11 @@ class IndexController extends Controller
 
     }
     public function tarifs(Request $request){
+        
         if($request->id){
             return response()->json(Tarif::find($request->id));
         }
-        return response()->json(Tarif::orderby('order','asc')->get());
+        return response()->json(Tarif::all());
     }
     public function changeTarif(ChangeTarifRequest $request, $id){
         $data = $request->validated();

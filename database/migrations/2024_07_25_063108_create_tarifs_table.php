@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->jsonb('body');
-            $table->text('price');
+            $table->bigInteger('price');
+            $table->integer('order');
             $table->timestamps();
         });
     }

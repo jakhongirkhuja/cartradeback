@@ -18,9 +18,10 @@ return new class extends Migration
             $table->timestamp('time_end');
             $table->bigInteger('current_price')->default(0)->index();
             $table->boolean('status')->default(false);
-            $table->string('key');
+            $table->string('key')->index();
             $table->bigInteger('sold_price')->default(0);
-            $table->unsignedBigInteger('buy_user_id')->nullable();
+            $table->boolean('sold')->default(false);
+            $table->unsignedBigInteger('sold_user_id')->nullable();
             $table->timestamps();
         });
     }

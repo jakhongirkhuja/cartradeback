@@ -11,7 +11,7 @@ class Car extends Model
 {
     use HasFactory;
    
-    public function aukstion()
+    public function auksion()
     {
         return $this->belongsTo(Auksion::class,'auksion_id');
     }

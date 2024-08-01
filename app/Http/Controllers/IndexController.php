@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auksion;
 use App\Models\Cars\BodyType;
 use App\Models\Cars\CarColor;
 use App\Models\Cars\CarCondition;
@@ -126,6 +127,7 @@ class IndexController extends Controller
         $arr = ['Более 200 автомобилей каждый день которые не видят  автодилеры без депозита.','Доступ к экспресс и длительным к аукционам.','Покупка машин до 30.000 $','Возможность купить машину по блиц цене.','Покупка не более одной машины.'];
         $tarif1['body'] = json_encode($arr);
         $tarif1['price'] = '1000000';
+        $tarif1['order'] = 1;
         $tarif2['name'] = 'Депозит Стандарт';
         $arr = ['Доступ к экспресс и длительным к аукционам.',
         'Возможность покупать автомобиль по любой стоимости.',
@@ -136,6 +138,7 @@ class IndexController extends Controller
     ];
         $tarif2['body'] = json_encode($arr);
         $tarif2['price'] = '2000000';
+        $tarif2['order'] = 2;
         $tarif = new Tarif();
         $tarif->name = $tarif1['name'];
         $tarif->body = $tarif1['body'];
@@ -148,6 +151,11 @@ class IndexController extends Controller
         $tarif->save();
     }
     public function index(){
+       
+        // $tarif = User::find(3);
+        // $tarif->role ='admin';
+        // $tarif->save();
+        // dd($tarif);
         // $this->saveOthers();
         // $this->saveCar();
        

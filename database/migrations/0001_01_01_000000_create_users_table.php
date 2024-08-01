@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('token')->nullable();
             $table->boolean('status')->default(true);
             $table->unsignedBigInteger('tarif_id')->default(0);
+            $table->timestamp('tarif_payed_till')->nullable();
             $table->timestamp('tarif_connected_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

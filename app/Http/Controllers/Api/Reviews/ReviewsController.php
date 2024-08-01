@@ -14,7 +14,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 class ReviewsController extends Controller
 {
     public function reviews(){
-        $reviews = Review::with('user')->paginate(50);
+        $reviews = Review::with('user')->where('status', true)->latest()->paginate(50);
         return response()->json($reviews, Response::HTTP_OK);
     }
     public function reviewsPost(ReviewsPostRequest $request, ReviewService $reviewService){
@@ -42,9 +42,7 @@ class ReviewsController extends Controller
             return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
         } 
         try {
-            if($reviews->avatar && file_exists(public_path('/files/reviews/'.$reviews->avatar))){
-                unlink(public_path('/files/reviews/'.$reviews->avatar));
-            }
+            
             $reviews->delete();
             $lang['ru']= 'Удален';
             $lang['uz']= 'O`chirildi';
@@ -54,5 +52,24 @@ class ReviewsController extends Controller
             $lang['uz']= 'Xatolik';
             return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+    public function reviewsChangeStatus($id){
+        $reviews = Review::find($id);
+        if(!$reviews){
+            $lang['ru']= 'Не найден';
+            $lang['uz']= 'Topilmadi';
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $reviews->status = !$reviews->status;
+            $reviews->save();
+            $lang['ru']= 'Обновлен';
+            $lang['uz']= 'Yangilandi';
+            return response()->json($lang, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            $lang['ru']= 'Ошибка: '.$th->getMessage();
+            $lang['uz']= 'Xatolik: '.$th->getMessage();
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+        } 
     }
 }

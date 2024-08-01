@@ -79,7 +79,7 @@ class AuksionService {
                     $auksionHistory->user_id = auth()->user()->id;
                     $auksionHistory->bid_price = (int ) $userData['bid_price'];
                     $auksionHistory->save();    
-                    return response()->json(AuksionHistory::where('auksion_id',$userData['auksion_id'])->orderby('bid_price','desc')->first());
+                    return response()->json(AuksionHistory::select('bid_price')->where('auksion_id',$userData['auksion_id'])->orderby('bid_price','desc')->first());
                 } catch (\Throwable $th) {
                     $lang['ru']= 'Ошибка: '.$th->getMessage();
                     $lang['uz']= 'Xatolik: '.$th->getMessage();
@@ -130,7 +130,7 @@ class AuksionService {
                     }
                     $user->save();
                     
-                    return response()->json(AuksionHistory::where('auksion_id',$userData['auksion_id'])->orderby('bid_price','desc')->first());
+                    return response()->json(AuksionHistory::select('bid_price')->where('auksion_id',$userData['auksion_id'])->orderby('bid_price','desc')->first());
                 } catch (\Throwable $th) {
                     $lang['ru']= 'Ошибка: '.$th->getMessage();
                     $lang['uz']= 'Xatolik: '.$th->getMessage();
@@ -145,5 +145,22 @@ class AuksionService {
         $lang['uz']= 'Ruxsat berilmadi';
         return ErrorHelperResponse::returnError($lang,Response::HTTP_UNAUTHORIZED);
     }
-    
+    public function auksionChangeStatus($userData){
+        $auksion = Auksion::find($userData['auksion_id']);
+        if($auksion){
+            try {
+                $auksion->status = !$auksion->status;
+                $auksion->save();
+                return response()->json($auksion);
+            } catch (\Throwable $th) {
+                $lang['ru']= 'Ошибка: '.$th->getMessage();
+                $lang['uz']= 'Xatolik: '.$th->getMessage();
+                return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+        $lang['ru']= 'Не найден';
+        $lang['uz']= 'Topilmadi';
+        return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+
+    }
 }

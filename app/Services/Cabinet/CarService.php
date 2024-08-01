@@ -9,6 +9,7 @@ use App\Models\Cars\CarImage;
 use App\Models\PhoneNumber;
 use App\Models\Review;
 use App\Models\User;
+
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -48,6 +49,7 @@ class CarService {
             $car->cylinders =(int) $userData['cylinders'];
             $car->vin = $userData['vin'];
             $car->auksion_id =$auksion->id;
+            $car->key = Str::orderedUuid();
             $car->salon =(int)$userData['salon'];
             $car->engine =(int) $userData['engine'];
             $car->carbody = (int)$userData['carbody'];
@@ -102,9 +104,9 @@ class CarService {
         } 
         try {
             $auksion->time_end = Carbon::parse($userData['time_end']);
-            $auksion->status = $userData['status'];
+            $auksion->time_start = Carbon::parse($userData['time_start']);
+            $auksion->status = false;
             $auksion->save();
-            $car->user_id = auth()->user()->id;
             $car->title = $userData['title'];
             $car->start_price = (int) filter_var($userData['start_price'], FILTER_SANITIZE_NUMBER_INT);
             $car->buy_price = (int) filter_var($userData['buy_price'], FILTER_SANITIZE_NUMBER_INT);
@@ -122,9 +124,14 @@ class CarService {
             $car->doors =(int) $userData['doors'];
             $car->cylinders =(int) $userData['cylinders'];
             $car->vin = $userData['vin'];
+            $car->auksion_id =$auksion->id;
+            $car->key = Str::orderedUuid();
             $car->salon =(int)$userData['salon'];
             $car->engine =(int) $userData['engine'];
             $car->carbody = (int)$userData['carbody'];
+            $car->body = $userData['body'];
+            $car->functions = $userData['functions'];
+            $car->status = true;
             $car->save();
             
         } catch (\Throwable $th) {
@@ -137,9 +144,9 @@ class CarService {
     public function carDelete( $id){
         $user = auth()->user();
         if($user->role=='admin'){
-            $car = Car::with('aukstion')->find($id);
+            $car = Car::with('auksion')->find($id);
         }else{
-            $car = Car::with('aukstion')->where('id',$id)->where('user_id', $user->id)->first();
+            $car = Car::with('auksion')->where('id',$id)->where('user_id', $user->id)->first();
         }
         if(!$car){
             $lang['ru']= 'Не найден';

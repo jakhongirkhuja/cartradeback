@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cabinet;
 
+use App\Helper\ErrorHelperResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auksion\AuksionBetRequest;
 use App\Http\Requests\Auksion\AuksionBuyRequest;
@@ -11,6 +12,7 @@ use App\Models\Auksion;
 use App\Models\AuksionHistory;
 use App\Services\Cabinet\AuksionService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AuksionController extends Controller
 {
@@ -44,10 +46,14 @@ class AuksionController extends Controller
         return $auksion->auksionBuy($request->validated());
     }
     public function auksionlastPrice($id){
-        return response()->json(AuksionHistory::select('bid_price')->where('auksion_id',$id)->orderby('bid_price','desc')->first());
+        $bitPrice = AuksionHistory::select('bid_price')->where('auksion_id',$id)->orderby('bid_price','desc')->first();
+        if($bitPrice){
+            return response()->json($bitPrice);
+        }
+        $lang['ru']= 'Не найден';
+        $lang['uz']= 'Topilmadi';
+        return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
     }
-
-
     public function auksionChangeStatus(AuksionChangeStatus $request, AuksionService $auksion){
         return $auksion->auksionChangeStatus($request->validated());
     }

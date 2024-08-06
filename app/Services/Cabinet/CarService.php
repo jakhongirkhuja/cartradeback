@@ -27,6 +27,7 @@ class CarService {
             $auksion->user_id = auth()->user()->id;
             $auksion->time_end = Carbon::parse($userData['time_end']);
             $auksion->time_start = Carbon::parse($userData['time_start']);
+            $auksion->key = Str::orderedUuid();
             $auksion->status = false;
             $auksion->save();
             $car = new Car();
@@ -49,7 +50,7 @@ class CarService {
             $car->cylinders =(int) $userData['cylinders'];
             $car->vin = $userData['vin'];
             $car->auksion_id =$auksion->id;
-            $car->key = Str::orderedUuid();
+            
             $car->salon =(int)$userData['salon'];
             $car->engine =(int) $userData['engine'];
             $car->carbody = (int)$userData['carbody'];

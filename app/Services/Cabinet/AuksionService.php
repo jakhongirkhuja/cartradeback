@@ -61,13 +61,17 @@ class AuksionService {
     }
     public function auksionBet($userData){
         if(auth()->user()->role=='dealer'){
-            $auksion = Auksion::find($userData['auksion_id']);
-            $auksion->status = true;
-            $auksion->save();
+            if(auth()->user()->tarif==null || Carbon::parse(auth()->user()->tarif_payed_till)->lt(Carbon::now())){
+                $lang['ru']= 'Тариф не активен';
+                $lang['uz']= 'Tarif aktiv faolda emas';
+                return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+            }
+            $auksion = Auksion::with('car')->find($userData['auksion_id']);
             if($auksion && $auksion->status){
                 $found = AuksionHistory::where('auksion_id',$userData['auksion_id'])->where('bid_price',(int ) $userData['bid_price'] )->first();
                 $maxPrice= AuksionHistory::where('auksion_id',$userData['auksion_id'])->orderby('bid_price','desc')->first();
-                if($found || $maxPrice->bid_price>= (int ) $userData['bid_price']){
+                
+                if($auksion->car->start_price>= (int ) $userData['bid_price'] || $found || ($maxPrice && $maxPrice->bid_price>= (int ) $userData['bid_price'])){
                     $lang['ru']= 'Отклонено. Введите другое значение.';
                     $lang['uz']= 'Rad etildi, boshqa qiymatni kiriting';
                     return ErrorHelperResponse::returnError($lang,Response::HTTP_FORBIDDEN);
@@ -99,8 +103,14 @@ class AuksionService {
 
             $auksion = Auksion::with('car')->find($userData['auksion_id']);
             if($auksion && $auksion->status){
+                if(auth()->user()->tarif==null || Carbon::parse(auth()->user()->tarif_payed_till)->lt(Carbon::now())){
+                    $lang['ru']= 'Тариф не активен';
+                    $lang['uz']= 'Tarif aktiv faolda emas';
+                    return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+                }
                 try {
-                    $auksionHistory = new AuksionHistory();
+                    
+                    $auksionHistory =  AuksionHistory::first();
                     $auksionHistory->auksion_id = $userData['auksion_id'];
                     $auksionHistory->user_id = auth()->user()->id;
                     $auksionHistory->bid_price = $auksion ->car->buy_price;
@@ -109,14 +119,16 @@ class AuksionService {
                     $auksion->current_price = $auksionHistory->bid_price;
                     $auksion->sold_price = $auksionHistory->bid_price;
                     $auksion->status = false;
-                    $auksion->buy_user_id = auth()->user()->id;
+                    $auksion->sold_user_id = auth()->user()->id;
                     $auksion->save();
     
                     $userTransaction = new UserTransaction();
                     $userTransaction->amount = $auksionHistory->bid_price;
+                    $userTransaction->user_id = auth()->user()->id;
                     $userTransaction->sign = false;
                     $userTransaction->service = 'auksion';
                     $userTransaction->service_id =$userData['auksion_id'];
+                    $userTransaction->action_user_id = auth()->user()->id;
                     $userTransaction->save();
     
                     $user = User::find(auth()->user()->id);

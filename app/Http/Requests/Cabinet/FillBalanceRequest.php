@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Reviews;
+namespace App\Http\Requests\Cabinet;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReviewsPostRequest extends FormRequest
+class FillBalanceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,7 @@ class ReviewsPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fullname'=>'required|min:2',
-            'email'=>'required|email',
-            'body'=>'required|min:20',
-            'avatar'=>'image|mimes:jpeg,png,jpg|max:2048'
+            'amount'=>'required',
         ];
     }
 }

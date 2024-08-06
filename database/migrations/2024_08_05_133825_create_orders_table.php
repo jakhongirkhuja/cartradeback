@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_transactions', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->bigInteger('amount')->default(0);
-            $table->boolean('sign')->default(true);
+            $table->decimal('price', 8, 2)->default(0.00);
+            $table->integer('user_id');
             $table->text('service')->nullable();
-            $table->unsignedBigInteger('action_user_id');
             $table->unsignedBigInteger('service_id');
+            $table->string('status')->default('waiting');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_transactions');
+        Schema::dropIfExists('orders');
     }
 };

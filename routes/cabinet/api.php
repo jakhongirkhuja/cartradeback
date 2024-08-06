@@ -36,16 +36,21 @@ Route::prefix('cabinet')->group(function () {
     Route::prefix('reviews')->middleware('auth:sanctum')->group(function (){
         Route::post('change-status/{id}',[ReviewsController::class, 'reviewsChangeStatus'])->middleware(adminRoleMiddleware::class);
         Route::post('delete/{id}',[ReviewsController::class, 'reviewsDelete'])->middleware(adminRoleMiddleware::class);
+        Route::get('list',[ReviewsController::class, 'reviewsList'])->middleware(adminRoleMiddleware::class);
     });
     
     Route::prefix('user')->controller(UserController::class)->middleware('auth:sanctum')->group(function () {
         Route::post('password-change', 'passwordChange');
         Route::post('info-change','infoChange');
-
+        Route::get('user-transactions','userTransactions');
+        Route::post('user-fill-balance','userFillBalance');
+        Route::post('user-tarif-choose','userTarifChoose');
+        
         Route::middleware(adminRoleMiddleware::class)->group(function(){
             // Route::post('phoneNumber-change','phoneNumberChange');
             Route::post('user-change-info','userInfoChangeAdmin');
             Route::get('user-list','userListChange');
+            
             Route::post('user-remove/{id}','userRemove');
             
         });

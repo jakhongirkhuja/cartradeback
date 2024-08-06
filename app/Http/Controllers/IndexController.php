@@ -10,6 +10,7 @@ use App\Models\Cars\CarModel;
 use App\Models\Cars\FuilType;
 use App\Models\Cars\Mark;
 use App\Models\Cars\Transmission;
+use App\Models\PhoneNumber;
 use App\Models\Tarif;
 use Illuminate\Support\Facades\Http;
 use App\Models\User;
@@ -143,14 +144,17 @@ class IndexController extends Controller
         $tarif->name = $tarif1['name'];
         $tarif->body = $tarif1['body'];
         $tarif->price = $tarif1['price'];
+        $tarif->order = 1;
         $tarif->save();
         $tarif = new Tarif();
         $tarif->name = $tarif2['name'];
         $tarif->body = $tarif2['body'];
         $tarif->price = $tarif2['price'];
+        $tarif->order = 2;
         $tarif->save();
     }
     public function index(){
+       
        
         // $tarif = User::find(3);
         // $tarif->role ='admin';
@@ -158,7 +162,7 @@ class IndexController extends Controller
         // dd($tarif);
         // $this->saveOthers();
         // $this->saveCar();
-       
+        
         return response()->json('404');
     }
 }

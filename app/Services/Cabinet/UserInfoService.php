@@ -8,12 +8,73 @@ use App\Models\Cars\Car;
 use App\Models\Cars\CarImage;
 use App\Models\PhoneNumber;
 use App\Models\Review;
+use App\Models\Tarif;
 use App\Models\User;
+use App\Models\UserTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 class UserInfoService {
+    public function userFillBalancee($userData){
+        try {
+            $userTransaction = new UserTransaction();
+            $userTransaction->amount = (int) $userData['amount'];
+            $userTransaction->user_id =auth()->user()->id;
+            $userTransaction->sign = true;
+            $userTransaction->service = 'user_balance';
+            $userTransaction->service_id = auth()->user()->id;
+            $userTransaction->action_user_id = auth()->user()->id;
+            $userTransaction->save();
+            $user = User::find(auth()->user()->id);
+            $user->balance = $user->balance + $userTransaction->amount;
+            $user->save();
+            return response()->json($user);
+        } catch (\Throwable $th) {
+            $lang['ru']= 'Ошибка '.$th->getMessage();
+            $lang['uz']= 'Xatolik '.$th->getMessage();
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+    public function userTarifChoose($userData){
+        $tarif = Tarif::find($userData['tarif_id']);
+        if(!$tarif){
+            $lang['ru']= 'Тариф не найден';
+            $lang['uz']= 'Tarif topilmadi';
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+        }
+        $value =(int) $userData['value'];
+        $price = (int) $tarif->price;
+        $newPrice = $price * $value;
+        $user = User::find(auth()->user()->id);
+        if($user->balance<$newPrice ){
+            $lang['ru']= 'Не дастатчно средств';
+            $lang['uz']= 'Yetarli mablag mavjud emas';
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_NOT_FOUND);
+        }
+        try {
+           
+            $userTransaction = new UserTransaction();
+            $userTransaction->amount =$newPrice ;
+            $userTransaction->user_id =auth()->user()->id;
+            $userTransaction->sign = false;
+            $userTransaction->service = 'tarif';
+            $userTransaction->service_id = $tarif->id;
+            $userTransaction->action_user_id = auth()->user()->id;
+            $userTransaction->save();
+            $newDate = Carbon::now()->addMonths($value);
+            $user->balance = $user->balance - $newPrice;
+            $user->tarif_id = $tarif->id;
+            $user->tarif_payed_till = $newDate;
+            $user->tarif_connected_at = Carbon::now();
+            $user->save();
+            return response()->json($user,Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            $lang['ru']= 'Ошибка '.$th->getMessage();
+            $lang['uz']= 'Xatolik '.$th->getMessage();
+            return ErrorHelperResponse::returnError($lang,Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
     public function userPasswordChange($userData){
         try {
             $user = User::find(auth()->user()->id);
@@ -101,6 +162,29 @@ class UserInfoService {
                 $user->familyName = $userData['familyName'];
                 $user->email = isset($userData['email'])? $userData['email'] : null;
                 $user->role = $userData['role'];
+                $userBalance = $user->balance;
+                $updatedBalance = (int)$userData['balance'];
+                if($updatedBalance>$userBalance ){
+                    $resultBalance = $updatedBalance- $userBalance;
+                    $userTransaction = new UserTransaction();
+                    $userTransaction->amount = $resultBalance;
+                    $userTransaction->user_id = $user->id;
+                    $userTransaction->sign = true;
+                    $userTransaction->service = 'user_balance';
+                    $userTransaction->service_id = $user->id;
+                    $userTransaction->action_user_id = auth()->user()->id;
+                    $userTransaction->save();
+                }else if ($updatedBalance<$userBalance){
+                    $resultBalance = $userBalance - $updatedBalance;
+                    $userTransaction = new UserTransaction();
+                    $userTransaction->amount = $resultBalance;
+                    $userTransaction->user_id = $user->id;
+                    $userTransaction->sign = false;
+                    $userTransaction->service = 'user_balance';
+                    $userTransaction->service_id = $user->id;
+                    $userTransaction->action_user_id = auth()->user()->id;
+                    $userTransaction->save();
+                }
                 $user->balance = (int)$userData['balance'];
                 $user->phoneNumber = (int) $userData['phoneNumber'];
                 $user->status = $userData['status'];

@@ -14,7 +14,12 @@ use Laravel\Sanctum\PersonalAccessToken;
 class ReviewsController extends Controller
 {
     public function reviews(){
+        
         $reviews = Review::with('user')->where('status', true)->latest()->paginate(50);
+        return response()->json($reviews, Response::HTTP_OK);
+    }
+    public function reviewsList(){
+        $reviews = Review::with('user')->latest()->paginate(50);
         return response()->json($reviews, Response::HTTP_OK);
     }
     public function reviewsPost(ReviewsPostRequest $request, ReviewService $reviewService){

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->longText('body');
             $table->jsonb('functions')->nullable();
             $table->bigInteger('start_price')->default(0)->index();
-            $table->bigInteger('buy_price')->default(0)->index();
+            $table->bigInteger('buy_price')->default(0)->index()->nullable();
             $table->text('images')->nullable();
             $table->unsignedBigInteger('mark_id')->index();
             $table->unsignedBigInteger('car_model_id')->index();
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->integer('doors')->default(5);
             $table->integer('cylinders')->default(10);
             $table->text('vin')->index();
-            $table->unsignedBigInteger('auksion_id')->index();
+            $table->unsignedBigInteger('auksion_id')->index()->nullable();
             $table->integer('salon')->default(5);
             $table->integer('engine')->default(5);
             $table->integer('carbody')->default(5);

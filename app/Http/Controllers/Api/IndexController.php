@@ -6,6 +6,7 @@ use App\Helper\ErrorHelperResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cabinet\ChangeTarifRequest;
 use App\Models\Auksion;
+use App\Models\CarCheck;
 use App\Models\Cars\BodyType;
 use App\Models\Cars\Car;
 use App\Models\Cars\CarColor;
@@ -115,5 +116,13 @@ class IndexController extends Controller
         $data = $request->validated();
         $tarif = Tarif::find($id);
         return $tarif->saveModel($data);
+    }
+    public function checks()
+    {
+
+        if (request()->type) {
+            $checks = CarCheck::where('type', request()->type)->orderby('order', 'asc')->get();
+            return response()->json($checks);
+        }
     }
 }

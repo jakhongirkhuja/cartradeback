@@ -3,6 +3,7 @@
 namespace App\Models\Cars;
 
 use App\Models\Auksion;
+use App\Models\CarCheckResult;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,19 +11,19 @@ use Illuminate\Database\Eloquent\Model;
 class Car extends Model
 {
     use HasFactory;
-   
+
     public function auksion()
     {
-        return $this->belongsTo(Auksion::class,'auksion_id');
+        return $this->belongsTo(Auksion::class, 'auksion_id');
     }
-    
+
     public function color()
     {
-        return $this->belongsTo(CarColor::class,'car_color_id');
+        return $this->belongsTo(CarColor::class, 'car_color_id');
     }
     public function condation()
     {
-        return $this->belongsTo(CarCondition::class,'car_condtion_id');
+        return $this->belongsTo(CarCondition::class, 'car_condtion_id');
     }
     public function carModel()
     {
@@ -30,27 +31,32 @@ class Car extends Model
     }
     public function carMark()
     {
-        return $this->belongsTo(Mark::class,'mark_id');
+        return $this->belongsTo(Mark::class, 'mark_id');
     }
     public function carBodyType()
     {
-        return $this->belongsTo(BodyType::class,'body_type_id');
+        return $this->belongsTo(BodyType::class, 'body_type_id');
     }
     public function carFuilType()
     {
-        return $this->belongsTo(FuilType::class,'fuil_type_id');
+        return $this->belongsTo(FuilType::class, 'fuil_type_id');
     }
-    public function transmission(){
-        return $this->belongsTo(Transmission::class,'transmission_id');
+    public function transmission()
+    {
+        return $this->belongsTo(Transmission::class, 'transmission_id');
     }
-    
+
     public function images()
     {
         return $this->hasMany(CarImage::class);
     }
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function checkResults()
+    {
+        return $this->hasMany(CarCheckResult::class);
     }
 }

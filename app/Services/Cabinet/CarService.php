@@ -4,6 +4,7 @@ namespace App\Services\Cabinet;
 
 use App\Helper\ErrorHelperResponse;
 use App\Models\Auksion;
+use App\Models\CarCheckResult;
 use App\Models\Cars\Car;
 use App\Models\Cars\CarImage;
 use App\Models\PhoneNumber;
@@ -258,5 +259,24 @@ class CarService
         $lang['ru'] = 'Не найден';
         $lang['uz'] = 'Topilmadi';
         return ErrorHelperResponse::returnError($lang, Response::HTTP_NOT_FOUND);
+    }
+    public function checksSave($id, $data)
+    {
+        foreach ($data['checks'] as $check) {
+            CarCheckResult::updateOrCreate(
+                [
+                    'car_id' => $id,
+                    'car_check_id' => $check['id'],
+                ],
+                [
+                    'status' => $check['status'] ?? false,
+                    'comment' => $check['comment'] ?? '',
+                ]
+            );
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Результаты сохранены',
+        ]);
     }
 }

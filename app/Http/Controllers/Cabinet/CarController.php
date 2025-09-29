@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cabinet;
 
+use App\Helper\ErrorHelperResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Car\CarEditRequest;
 use App\Http\Requests\Car\CarImageEditRequest;
@@ -11,6 +12,8 @@ use App\Models\Auksion;
 use App\Models\Cars\Car;
 use App\Services\Cabinet\CarService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class CarController extends Controller
 {
@@ -19,7 +22,7 @@ class CarController extends Controller
 
         if ($request->id) {
             if (auth()->user()->role == 'admin') {
-                $car = Car::with('images', 'auksion', 'carMark', 'carModel', 'color', 'condation', 'carBodyType', 'carFuilType', 'transmission')->find($request->id);
+                $car = Car::with('images', 'auksion', 'carMark', 'carModel', 'color', 'condation', 'carBodyType', 'carFuilType', 'transmission', 'checkResults.check')->find($request->id);
             } else {
                 $car = Car::with('images', 'auksion', 'carMark', 'carModel', 'color', 'condation', 'carBodyType', 'carFuilType', 'transmission')->where('user_id', auth()->user()->id)->find($request->id);
             }
@@ -55,6 +58,35 @@ class CarController extends Controller
     public function carImageDelete($id, CarService $auksion)
     {
         return $auksion->carImageDelete($id);
+    }
+    public function checksSave($id, $type, Request $request, CarService $auksion)
+    {
+        $user = auth()->user();
+        if ($user->role == 'admin') {
+            $car = Car::find($id);
+            $car->auto_type = $type;
+            $car->save();
+        }
+        if (!$car) {
+            $lang['ru'] = 'Не найден';
+            $lang['uz'] = 'Topilmadi';
+            return ErrorHelperResponse::returnError($lang, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $data = $request->validate([
+                'checks' => 'required|array',
+                'checks.*.id' => 'required|integer|exists:car_checks,id',
+                'checks.*.status' => 'nullable|boolean',
+                'checks.*.comment' => 'nullable|string',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка валидации',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+        return $auksion->checksSave($id, $data);
     }
     public function carImageAdd($id, CarImageEditRequest $request, CarService $auksion)
     {

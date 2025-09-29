@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 class CarCheckResult extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'car_id',
+        'car_check_id',
+        'status',
+        'comment'
+    ];
     public function car()
     {
         return $this->belongsTo(Car::class);

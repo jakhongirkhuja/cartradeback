@@ -35,4 +35,5 @@ Route::post('/auksion-bet', [IndexController::class, 'auksionBet']);
 Route::post('/enquery/{type}', [IndexController::class, 'enquery']);
 Route::get('/checks', [IndexController::class, 'checks']);
 
+
 Route::post('/payme', [PaymeController::class, 'index'])->middleware(PaymeMiddleware::class);

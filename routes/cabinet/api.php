@@ -32,6 +32,7 @@ Route::prefix('cabinet')->group(function () {
         Route::post('delete/{id}', [CarController::class, 'carDelete']);
         Route::post('image/add/{id}', [CarController::class, 'carImageAdd']);
         Route::post('image/delete/{id}', [CarController::class, 'carImageDelete']);
+        Route::post('/checks/{id}/type/{type}', [CarController::class, 'checksSave']);
     });
     Route::post('change-tarif/{id}', [IndexController::class, 'changeTarif'])->middleware(adminRoleMiddleware::class);
     Route::get('tarifs', [IndexController::class, 'tarifs']);

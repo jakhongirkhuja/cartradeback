@@ -13,144 +13,145 @@ class CarChecksSeeder extends Seeder
      */
     public function run(): void
     {
-        $checks = [
+        $electric_system_checks = [
             [
-                'title_ru' => 'Запуск с первого раза',
-                'title_uz' => 'Birinchi urinishda ishga tushadi',
-                'title_en' => 'Starts on the first try',
+                'title_ru' => 'Проверка включения системы (READY / ON без ошибок)',
+                'title_uz' => 'Tizimni yoqish (READY / ON) holati xatosiz tekshiriladi',
+                'title_en' => 'System activation check (READY / ON without errors)',
             ],
             [
-                'title_ru' => 'Холостой ход стабильный',
-                'title_uz' => 'Bo‘sh holatda barqaror ishlaydi',
-                'title_en' => 'Idle is stable',
+                'title_ru' => 'Проверка отсутствия ошибок на панели (Check EV System и др.)',
+                'title_uz' => 'Panelda xatoliklar yo‘qligi tekshiriladi (Check EV System va boshqalar)',
+                'title_en' => 'Dashboard error check (Check EV System, etc.)',
             ],
             [
-                'title_ru' => 'Отсутствие посторонних шумов',
-                'title_uz' => 'Begona shovqinlar yo‘q',
-                'title_en' => 'No unusual noises',
+                'title_ru' => 'Проверка состояния тягового аккумулятора (SoH, остаточная ёмкость)',
+                'title_uz' => 'Tortish akkumulyatori holati (SoH, qolgan sig‘im) tekshiriladi',
+                'title_en' => 'Traction battery condition check (SoH, remaining capacity)',
             ],
             [
-                'title_ru' => 'Нет вибраций при работе',
-                'title_uz' => 'Ish paytida tebranish yo‘q',
-                'title_en' => 'No vibrations during operation',
+                'title_ru' => 'Проверка напряжения HV-батареи',
+                'title_uz' => 'HV-batareya kuchlanishi tekshiriladi',
+                'title_en' => 'HV battery voltage check',
             ],
             [
-                'title_ru' => 'Нет утечек масла',
-                'title_uz' => 'Moy sizishi yo‘q',
-                'title_en' => 'No oil leaks',
+                'title_ru' => 'Проверка температуры HV-батареи',
+                'title_uz' => 'HV-batareya harorati tekshiriladi',
+                'title_en' => 'HV battery temperature check',
             ],
             [
-                'title_ru' => 'Нет подтёков антифриза',
-                'title_uz' => 'Antifriz sizishi yo‘q',
-                'title_en' => 'No coolant leaks',
+                'title_ru' => 'Проверка инвертора (охлаждение, шум, состояние)',
+                'title_uz' => 'Invertor holati (sovutish, shovqin) tekshiriladi',
+                'title_en' => 'Inverter check (cooling, noise, condition)',
             ],
             [
-                'title_ru' => 'Нет подтёков топлива',
-                'title_uz' => 'Yoqilg‘i sizishi yo‘q',
-                'title_en' => 'No fuel leaks',
+                'title_ru' => 'Проверка редуктора (уровень масла, шумы)',
+                'title_uz' => 'Reduktor (moy darajasi, shovqin) tekshiriladi',
+                'title_en' => 'Reducer check (oil level, noises)',
             ],
             [
-                'title_ru' => 'Уровень масла в норме',
-                'title_uz' => 'Moy darajasi me’yorda',
-                'title_en' => 'Oil level is normal',
+                'title_ru' => 'Проверка соединений HV-кабелей (оранжевые провода, разъёмы)',
+                'title_uz' => 'HV-kabel ulanishlari (to‘q sariq simlar, raz’yomlar) tekshiriladi',
+                'title_en' => 'HV cable connections check (orange wires, connectors)',
             ],
             [
-                'title_ru' => 'Цвет масла нормальный',
-                'title_uz' => 'Moy rangi me’yorda',
-                'title_en' => 'Oil color is normal',
+                'title_ru' => 'Проверка герметичности HV-системы',
+                'title_uz' => 'HV tizimi germetikligi tekshiriladi',
+                'title_en' => 'HV system tightness check',
             ],
             [
-                'title_ru' => 'Отсутствие запаха гари',
-                'title_uz' => 'Yonish hidi yo‘q',
-                'title_en' => 'No burning smell',
+                'title_ru' => 'Проверка охлаждения батареи (жидкость / вентилятор)',
+                'title_uz' => 'Batareya sovutish tizimi (suyuqlik / ventilyator) tekshiriladi',
+                'title_en' => 'Battery cooling system check (liquid / fan)',
             ],
             [
-                'title_ru' => 'Проверка компрессии',
-                'title_uz' => 'Siqilish (kompressiya) tekshirildi',
-                'title_en' => 'Compression check',
+                'title_ru' => 'Проверка работы электромотора при разгоне',
+                'title_uz' => 'Tezlashishda elektromotor ishlashi tekshiriladi',
+                'title_en' => 'Electric motor performance check during acceleration',
             ],
             [
-                'title_ru' => 'Проверка давления масла',
-                'title_uz' => 'Moy bosimi tekshirildi',
-                'title_en' => 'Oil pressure check',
+                'title_ru' => 'Проверка отклика на педаль акселератора',
+                'title_uz' => 'Gaz pedali javob tezligi tekshiriladi',
+                'title_en' => 'Throttle pedal response check',
             ],
             [
-                'title_ru' => 'Проверка ремня ГРМ / цепи',
-                'title_uz' => 'GRM kamar / zanjiri tekshirildi',
-                'title_en' => 'Timing belt/chain check',
+                'title_ru' => 'Проверка плавности старта',
+                'title_uz' => 'Harakatni yumshoq boshlanishi tekshiriladi',
+                'title_en' => 'Smooth start check',
             ],
             [
-                'title_ru' => 'Проверка роликов и натяжителя',
-                'title_uz' => 'Roliklar va tortkich tekshirildi',
-                'title_en' => 'Pulleys and tensioner check',
+                'title_ru' => 'Проверка рекуперации (заряд при торможении)',
+                'title_uz' => 'Rekuperatsiya tizimi (tormozda zaryad) tekshiriladi',
+                'title_en' => 'Regeneration system check (charging during braking)',
             ],
             [
-                'title_ru' => 'Проверка опор двигателя',
-                'title_uz' => 'Dvigatel tayanchlari tekshirildi',
-                'title_en' => 'Engine mounts check',
+                'title_ru' => 'Проверка уровня тока при рекуперации (по сканеру)',
+                'title_uz' => 'Rekuperatsiya paytidagi tok darajasi skaner orqali tekshiriladi',
+                'title_en' => 'Regenerative current level check (via scanner)',
             ],
             [
-                'title_ru' => 'Проверка вентиляции картера',
-                'title_uz' => 'Karter ventilyatsiyasi tekshirildi',
-                'title_en' => 'Crankcase ventilation check',
+                'title_ru' => 'Проверка работы режима Eco / Normal / Sport',
+                'title_uz' => 'Eco / Normal / Sport rejimlari ishlashi tekshiriladi',
+                'title_en' => 'Eco / Normal / Sport mode functionality check',
             ],
             [
-                'title_ru' => 'Проверка помпы',
-                'title_uz' => 'Nasos (pompa) tekshirildi',
-                'title_en' => 'Water pump check',
+                'title_ru' => 'Проверка температуры электромотора',
+                'title_uz' => 'Elektromotor harorati tekshiriladi',
+                'title_en' => 'Electric motor temperature check',
             ],
             [
-                'title_ru' => 'Проверка термостата',
-                'title_uz' => 'Termostat tekshirildi',
-                'title_en' => 'Thermostat check',
+                'title_ru' => 'Проверка вибраций и шумов при движении',
+                'title_uz' => 'Harakatda tebranish va shovqinlar tekshiriladi',
+                'title_en' => 'Vibration and noise check while driving',
             ],
             [
-                'title_ru' => 'Проверка радиатора и вентилятора',
-                'title_uz' => 'Radiator va ventilyator tekshirildi',
-                'title_en' => 'Radiator and fan check',
+                'title_ru' => 'Проверка герметичности охлаждающей системы',
+                'title_uz' => 'Sovutish tizimi germetikligi tekshiriladi',
+                'title_en' => 'Cooling system tightness check',
             ],
             [
-                'title_ru' => 'Проверка дымности выхлопа',
-                'title_uz' => 'Chiqarilayotgan tutun tekshirildi',
-                'title_en' => 'Exhaust smoke check',
+                'title_ru' => 'Проверка состояния контактора HV (щёлкает при включении)',
+                'title_uz' => 'HV kontakti (yoqilganda bosim tovushi) tekshiriladi',
+                'title_en' => 'HV contactor check (clicks when activated)',
             ],
             [
-                'title_ru' => 'Проверка лямбда-зонда',
-                'title_uz' => 'Lambda datchigi tekshirildi',
-                'title_en' => 'Oxygen sensor (lambda) check',
+                'title_ru' => 'Проверка зарядки 12V аккумулятора от DC/DC преобразователя',
+                'title_uz' => '12V akkumulyator DC/DC o‘zgartirgich orqali zaryadlanishi tekshiriladi',
+                'title_en' => '12V battery charging check via DC/DC converter',
             ],
             [
-                'title_ru' => 'Проверка катализатора',
-                'title_uz' => 'Katalizator tekshirildi',
-                'title_en' => 'Catalytic converter check',
+                'title_ru' => 'Проверка изоляции HV-системы',
+                'title_uz' => 'HV tizimi izolyatsiyasi tekshiriladi',
+                'title_en' => 'HV system insulation check',
             ],
             [
-                'title_ru' => 'Проверка утечек выхлопа',
-                'title_uz' => 'Chiqarish tizimida sizish yo‘q',
-                'title_en' => 'Exhaust leaks check',
+                'title_ru' => 'Проверка эффективности торможения при рекуперации',
+                'title_uz' => 'Rekuperatsiya paytidagi tormoz samaradorligi tekshiriladi',
+                'title_en' => 'Regenerative braking efficiency check',
             ],
             [
-                'title_ru' => 'Проверка ЭБУ на ошибки (OBD-II)',
-                'title_uz' => 'ECU xatoliklari (OBD-II) tekshirildi',
-                'title_en' => 'ECU error check (OBD-II)',
+                'title_ru' => 'Проверка ошибок по системе управления электроприводом',
+                'title_uz' => 'Elektroprivod boshqaruv tizimi xatolari tekshiriladi',
+                'title_en' => 'Electric drive control system error check',
             ],
             [
-                'title_ru' => 'Проверка общего состояния ДВС (оценка: норма / требует ремонта / критично)',
-                'title_uz' => 'Dvigatelning umumiy holati (me’yorda / ta’mir talab / jiddiy)',
-                'title_en' => 'Overall engine condition (normal / needs repair / critical)',
+                'title_ru' => 'Общая оценка состояния тяговой установки (норма / требует внимания / критично)',
+                'title_uz' => 'Tortish tizimi umumiy holati (normal / e’tibor kerak / kritik)',
+                'title_en' => 'Overall traction system condition (normal / attention required / critical)',
             ],
         ];
 
+
         $i = 1;
-        foreach ($checks as $key => $value) {
+        foreach ($electric_system_checks as $key => $value) {
             $checkcategory = new CarCheck();
             $checkcategory->title_ru = $value['title_ru'];
             $checkcategory->title_uz = $value['title_uz'];
             $checkcategory->title_en = $value['title_en'];
             $checkcategory->order = $i++;
-            $checkcategory->type = 'ico';
-            $checkcategory->car_check_category_id = 1;
-            $checkcategory->car_check_sub_category_id = 3;
+            $checkcategory->type = 'electro';
+            $checkcategory->car_check_category_id = 5;
+            $checkcategory->car_check_sub_category_id = 8;
             $checkcategory->save();
         }
     }

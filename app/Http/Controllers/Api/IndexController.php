@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cabinet\ChangeTarifRequest;
 use App\Models\Auksion;
 use App\Models\CarCheck;
+use App\Models\CarCheckCategory;
 use App\Models\Cars\BodyType;
 use App\Models\Cars\Car;
 use App\Models\Cars\CarColor;
@@ -121,8 +122,19 @@ class IndexController extends Controller
     {
 
         if (request()->type) {
-            $checks = CarCheck::where('type', request()->type)->orderby('order', 'asc')->get();
-            return response()->json($checks);
+            $type = request()->type;
+            $categories = CarCheckCategory::with([
+                'subCategories' => function ($query) {
+                    $query->orderBy('order');
+                },
+                'carChecks' => function ($query) {
+                    $query->orderBy('order');
+                }
+            ])
+                ->where('type', $type)
+                ->orderBy('order')
+                ->get();
+            return response()->json($categories);
         }
     }
 }

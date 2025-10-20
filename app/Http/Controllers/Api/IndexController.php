@@ -125,10 +125,10 @@ class IndexController extends Controller
             $type = request()->type;
             $categories = CarCheckCategory::with([
                 'subCategories' => function ($query) {
-                    $query->orderBy('order');
-                },
-                'carChecks' => function ($query) {
-                    $query->orderBy('order');
+                    $query->orderBy('order')
+                        ->with(['carChecks' => function ($query) {
+                            $query->orderBy('order');
+                        }]);
                 }
             ])
                 ->where('type', $type)

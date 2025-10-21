@@ -72,6 +72,7 @@ class IndexController extends Controller
                 'name' => 'required',
                 'familyName' => 'required',
                 'phoneNumber' => 'required|size:12',
+                'link' => 'required',
 
             ]);
         }

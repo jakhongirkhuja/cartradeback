@@ -3,6 +3,7 @@
 namespace App\Models\Cars;
 
 use App\Models\Auksion;
+use App\Models\Booking;
 use App\Models\CarCheckResult;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -58,5 +59,9 @@ class Car extends Model
     public function checkResults()
     {
         return $this->hasMany(CarCheckResult::class);
+    }
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }

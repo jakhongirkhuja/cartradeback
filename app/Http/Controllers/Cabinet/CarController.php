@@ -96,4 +96,8 @@ class CarController extends Controller
     {
         return $carservice->carChangeStatus($request->validated());
     }
+    public function checkavailibility(CarService $carservice, Request $request)
+    {
+        return $carservice->checkavailibility($request->start_date, $request->end_date, $request->car_id);
+    }
 }

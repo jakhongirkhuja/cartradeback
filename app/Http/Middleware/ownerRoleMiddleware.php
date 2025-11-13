@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class adminRoleMiddleware
+class ownerRoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,8 @@ class adminRoleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-
         $role = Auth::user()->role;
-        if ($role != 'admin') {
+        if ($role != 'rent' || $role != 'admin') {
             $lang['ru'] = 'Отказано в доступе';
             $lang['uz'] = 'Ruxsat berilmadi';
             return ErrorHelperResponse::returnError($lang, Response::HTTP_UNAUTHORIZED);

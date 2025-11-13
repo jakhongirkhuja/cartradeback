@@ -25,7 +25,7 @@ class CarPostRequest extends FormRequest
             'title' => 'required',
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'start_price' => 'required',
+            // 'start_price' => 'required',
             'mark_id' => 'required|numeric',
             'car_model_id' => 'required|numeric',
             'car_color_id' => 'required|numeric',
@@ -40,11 +40,21 @@ class CarPostRequest extends FormRequest
             'doors' => 'required',
             'cylinders' => 'required',
             'vin' => 'required',
+            'engine_number' => 'required',
             'salon' => 'required',
             'engine' => 'required',
             'carbody' => 'required',
             'body' => 'required',
             'functions' => 'required',
+            'type' => 'required',
+            // 'rent_status' => 'required_if:type,rent|numeric|min:0|max:1',
+            'rent_price' => 'required_if:type,rent|numeric',
+            // 'rent_initial_price' => 'required_if:type,rent|numeric',
+            // 'rent_deposit' => 'required_if:type,rent|numeric',
+            'rent_limit_km' => 'required_if:type,rent|numeric',
+            'technical_passport' => 'required_if:type,rent|image|mimes:jpeg,png,jpg|max:3096',
+            'insurance' => 'required_if:type,rent|image|mimes:jpeg,png,jpg|max:3096',
+
         ];
     }
 }

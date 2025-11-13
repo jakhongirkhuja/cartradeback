@@ -3,13 +3,17 @@
 use App\Http\Controllers\Api\Auth\UserAuthController;
 use App\Http\Controllers\Api\IndexController;
 use App\Http\Controllers\Api\Reviews\ReviewsController;
+use App\Http\Controllers\Cabinet\CarController;
 use App\Http\Controllers\Payment\PaymeController;
 use App\Http\Middleware\PaymeMiddleware;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    $user = User::with('passport')->find(Auth::id());
+    return $user;
 })->middleware('auth:sanctum');
 Route::get('/user/logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
@@ -31,6 +35,7 @@ Route::get('/loadMark', [IndexController::class, 'loadMark']);
 Route::get('/loadModel/{mark_id}', [IndexController::class, 'loadModel']);
 Route::get('/filters', [IndexController::class, 'filters']);
 Route::get('/auksion', [IndexController::class, 'auksion']);
+Route::get('/auksion/check-availibility', [CarController::class, 'checkavailibility']);
 Route::post('/auksion-bet', [IndexController::class, 'auksionBet']);
 Route::post('/enquery/{type}', [IndexController::class, 'enquery']);
 Route::get('/checks', [IndexController::class, 'checks']);

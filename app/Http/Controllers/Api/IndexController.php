@@ -32,8 +32,18 @@ class IndexController extends Controller
             // 'car.carBodyType', 'car.carFuilType', 'car.transmission'
             // )->where('status', true)->find($request->id);
             // on production status must set to trur
-            $cars = Car::with('images', 'color', 'condation', 'carModel', 'carMark', 'carBodyType', 'carFuilType', 'transmission', 'checkResults.check')
+            $cars = Car::with('images', 'color', 'condation', 'carModel', 'carMark', 'carBodyType', 'carFuilType', 'transmission', 'checkResults.check', 'bookings')
                 ->where('status', true)->find($request->id);
+            if ($cars) {
+
+                $cars->bookings = $cars->bookings->map(function ($booking) {
+
+                    return [
+                        'start' => $booking->start_date->toIso8601String(),
+                        'end'   => $booking->end_date->toIso8601String(),
+                    ];
+                });
+            }
         } else {
             $cars = Car::with('images', 'color', 'condation', 'carModel', 'carMark', 'carBodyType', 'carFuilType', 'transmission')
                 ->where('status', true)->latest()->paginate(50);

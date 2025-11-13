@@ -4,6 +4,7 @@ namespace App\Services\Cabinet;
 
 use App\Helper\ErrorHelperResponse;
 use App\Models\Auksion;
+use App\Models\Booking;
 use App\Models\CarCheckResult;
 use App\Models\Cars\Car;
 use App\Models\Cars\CarImage;
@@ -13,6 +14,7 @@ use App\Models\User;
 
 use Carbon\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -35,9 +37,9 @@ class CarService
             // $auksion->status = false;
             // $auksion->save();
             $car = new Car();
-            $car->user_id = auth()->user()->id;
+            $car->user_id = Auth::id();
             $car->title = $userData['title'];
-            $car->start_price = (int) filter_var($userData['start_price'], FILTER_SANITIZE_NUMBER_INT);
+            // $car->start_price = (int) filter_var($userData['start_price'], FILTER_SANITIZE_NUMBER_INT);
             $car->buy_price = 1;
             $car->mark_id = (int)$userData['mark_id'];
             $car->car_model_id = (int) $userData['car_model_id'];
@@ -54,14 +56,31 @@ class CarService
             $car->cylinders = (int) $userData['cylinders'];
             $car->vin = $userData['vin'];
             $car->auksion_id = 1;
-
+            $car->engine_number = $userData['engine_number'];
             $car->salon = (int)$userData['salon'];
             $car->engine = (int) $userData['engine'];
             $car->carbody = (int)$userData['carbody'];
             $car->body = $userData['body'];
             $car->functions = $userData['functions'];
-            $car->status = true;
+            $car->status = false;
+
+            if ($userData['type'] == 'sale') {
+
+                $car->rent_status = false;
+                $car->rent_price = $userData['rent_price'];
+                $car->rent_limit_km = $userData['rent_limit_km'];
+                $imageTechnicalPassportName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $userData['technical_passport']->getClientOriginalExtension();
+                $userData['technical_passport']->move(public_path('/files/others'), $imageTechnicalPassportName);
+                $imageInsuranceName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $userData['insurance']->getClientOriginalExtension();
+                $userData['insurance']->move(public_path('/files/others'), $imageInsuranceName);
+
+                $car->insurance = $imageInsuranceName;
+                $car->technical_passport = $imageTechnicalPassportName;
+            }
+
             $car->save();
+
+
 
             foreach ($userData['images'] as $key => $images) {
                 $imageName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $images->getClientOriginalExtension();
@@ -80,7 +99,7 @@ class CarService
     }
     public function carEdit($userData, $id)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user->role == 'admin') {
             $car = Car::find($id);
         } else {
@@ -114,7 +133,7 @@ class CarService
             // $auksion->status = false;
             // $auksion->save();
             $car->title = $userData['title'];
-            $car->start_price = (int) filter_var($userData['start_price'], FILTER_SANITIZE_NUMBER_INT);
+            // $car->start_price = (int) filter_var($userData['start_price'], FILTER_SANITIZE_NUMBER_INT);
             // $car->buy_price = (int) filter_var($userData['buy_price'], FILTER_SANITIZE_NUMBER_INT);
             $car->mark_id = (int)$userData['mark_id'];
             $car->car_model_id = (int) $userData['car_model_id'];
@@ -127,6 +146,9 @@ class CarService
             $car->year = (int) $userData['year'];
             $car->mileage = $userData['mileage'];
             $car->engine_capacity = $userData['engine_capacity'];
+            $car->engine_number = $userData['engine_number'];
+
+
             $car->doors = (int) $userData['doors'];
             $car->cylinders = (int) $userData['cylinders'];
             $car->vin = $userData['vin'];
@@ -137,7 +159,29 @@ class CarService
             // $car->carbody = (int)$userData['carbody'];
             $car->body = $userData['body'];
             $car->functions = $userData['functions'];
-            $car->status = true;
+            $car->status = false;
+            if ($userData['type'] == 'rent') {
+
+                $car->rent_status = false;
+                $car->rent_price = $userData['rent_price'];
+                $car->rent_limit_km = $userData['rent_limit_km'];
+                if (isset($userData['technical_passport'])) {
+                    if (!empty($car->technical_passport) && file_exists(public_path('/files/others/' . $car->technical_passport))) {
+                        unlink(public_path('/files/others/' . $car->technical_passport));
+                    }
+                    $imageTechnicalPassportName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $userData['technical_passport']->getClientOriginalExtension();
+                    $userData['technical_passport']->move(public_path('/files/others'), $imageTechnicalPassportName);
+                    $car->technical_passport = $imageTechnicalPassportName;
+                }
+                if (isset($userData['insurance'])) {
+                    if (!empty($car->insurance) &&  file_exists(public_path('/files/others/' . $car->insurance))) {
+                        unlink(public_path('/files/others/' . $car->insurance));
+                    }
+                    $imageInsuranceName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $userData['insurance']->getClientOriginalExtension();
+                    $userData['insurance']->move(public_path('/files/others'), $imageInsuranceName);
+                    $car->insurance = $imageInsuranceName;
+                }
+            }
             $car->save();
         } catch (\Throwable $th) {
             $lang['ru'] = 'Ошибка: ' . $th->getMessage();
@@ -278,5 +322,31 @@ class CarService
             'success' => true,
             'message' => 'Результаты сохранены',
         ]);
+    }
+    public function checkavailibility($start_date, $end_date, $car_id)
+    {
+
+        if ($start_date && $end_date && $car_id) {
+            $startDate = Carbon::parse($start_date)->startOfDay();
+            $endDate = Carbon::parse($end_date)->endOfDay();
+
+            $exists = Booking::where('car_id', $car_id)
+                ->where(function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('start_date', [$startDate, $endDate])
+                        ->orWhereBetween('end_date', [$startDate, $endDate])
+                        ->orWhere(function ($q) use ($startDate, $endDate) {
+                            $q->where('start_date', '<=', $startDate)
+                                ->where('end_date', '>=', $endDate);
+                        });
+                })
+                ->exists();
+
+            return response()->json([
+                'available' => !$exists,
+                'message' => $exists ? '❌ Эти даты уже заняты' : '✅ Автомобиль доступен',
+            ]);
+        }
+
+        return response()->json(['error' => 'Недостаточно данных'], 422);
     }
 }

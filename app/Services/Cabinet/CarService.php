@@ -69,6 +69,9 @@ class CarService
                 $car->rent_status = false;
                 $car->rent_price = $userData['rent_price'];
                 $car->rent_limit_km = $userData['rent_limit_km'];
+                $car->rent_price_overflow = $userData['rent_price_overflow'];
+                $car->rent_deposit = $userData['rent_deposit'];
+
                 $imageTechnicalPassportName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $userData['technical_passport']->getClientOriginalExtension();
                 $userData['technical_passport']->move(public_path('/files/others'), $imageTechnicalPassportName);
                 $imageInsuranceName = (string) Str::uuid() . '-' . Str::random(15) . '.' . $userData['insurance']->getClientOriginalExtension();
@@ -165,6 +168,8 @@ class CarService
                 $car->rent_status = false;
                 $car->rent_price = $userData['rent_price'];
                 $car->rent_limit_km = $userData['rent_limit_km'];
+                $car->rent_price_overflow = $userData['rent_price_overflow'];
+                $car->rent_deposit = $userData['rent_deposit'];
                 if (isset($userData['technical_passport'])) {
                     if (!empty($car->technical_passport) && file_exists(public_path('/files/others/' . $car->technical_passport))) {
                         unlink(public_path('/files/others/' . $car->technical_passport));
@@ -192,7 +197,7 @@ class CarService
     }
     public function carDelete($id)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user->role == 'admin') {
             $car = Car::with('auksion')->find($id);
         } else {
@@ -235,7 +240,7 @@ class CarService
             $lang['uz'] = 'Topilmadi';
             return ErrorHelperResponse::returnError($lang, Response::HTTP_NOT_FOUND);
         }
-        if (auth()->user()->role == 'admin' || $image->car->user->id == auth()->user()->id) {
+        if (Auth::user()->role == 'admin' || $image->car->user->id == Auth::id()) {
             try {
 
                 if (file_exists(public_path('/files/cars/' . $image->image))) {
@@ -258,7 +263,7 @@ class CarService
     }
     public function carImageAdd($userData, $id)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user->role == 'admin') {
             $car = Car::find($id);
         } else {
@@ -330,7 +335,7 @@ class CarService
             $startDate = Carbon::parse($start_date)->startOfDay();
             $endDate = Carbon::parse($end_date)->endOfDay();
 
-            $exists = Booking::where('car_id', $car_id)
+            $exists = Booking::where('car_id', $car_id)->whereNotIn('rent_status', ['completed', 'rejected'])
                 ->where(function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('start_date', [$startDate, $endDate])
                         ->orWhereBetween('end_date', [$startDate, $endDate])

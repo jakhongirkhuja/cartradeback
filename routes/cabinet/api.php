@@ -41,6 +41,8 @@ Route::prefix('cabinet')->group(function () {
         Route::post('bookings/changeStatus', [BookingController::class, 'changeStatus'])->middleware([ownerRoleMiddleware::class]);
         Route::post('bookings/uploadImageSignature', [BookingController::class, 'uploadImageSignature']);
         Route::get('bookings', [BookingController::class, 'userBookings']);
+        Route::post('bookings/create', [BookingController::class, 'createBooking']);
+        Route::post('bookings/steps', [BookingController::class, 'bookingSteps']);
     });
     Route::post('change-tarif/{id}', [IndexController::class, 'changeTarif'])->middleware(adminRoleMiddleware::class);
     Route::get('tarifs', [IndexController::class, 'tarifs']);

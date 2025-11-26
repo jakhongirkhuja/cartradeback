@@ -18,7 +18,7 @@ class ownerRoleMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $role = Auth::user()->role;
-        if ($role != 'rent' || $role != 'admin') {
+        if ($role != 'rent' && $role != 'admin') {
             $lang['ru'] = 'Отказано в доступе';
             $lang['uz'] = 'Ruxsat berilmadi';
             return ErrorHelperResponse::returnError($lang, Response::HTTP_UNAUTHORIZED);

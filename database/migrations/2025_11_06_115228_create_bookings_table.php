@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('end_date');
             $table->integer('total_price');
             $table->integer('payed_price')->default(0);
-            $table->text('status')->default('pending'); //payment//booked
+            $table->text('status')->default('pending'); //payment//
             $table->text('rent_status')->nullable(); //accepted,car_given,in_use,completed,rejected
             $table->text('fiscalUrl')->nullable();
             $table->text('comment')->nullable();

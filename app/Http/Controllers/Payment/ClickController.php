@@ -129,7 +129,7 @@ class ClickController extends Controller
             ClickUz::where('click_trans_id', $clickTransId)->update(['situation' => 1, 'status' => 'success']);
             try {
                 if ($booking) {
-                    $booking->status = 'booked';
+                    $booking->status = 'payed';
                     $booking->save();
                     $userTransaction = new UserTransaction();
                     $userTransaction->user_id = $booking->user_id;

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api\Cabinet;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingChangeStatus;
+use App\Http\Requests\BookingStepRequest;
 use App\Http\Requests\BookingStoreRequest;
+use App\Http\Requests\CreateBookingRequest;
 use App\Http\Requests\SignatureRequest;
 use App\Models\Booking;
 use App\Models\Cars\Car;
-use App\Services\BookingService;
+use App\Services\Cabinet\BookingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -77,13 +79,66 @@ class BookingController extends Controller
     public function userBookings()
     {
         $user = Auth::user();
+
         if ($user->role === 'rent') {
-            $booking = Booking::wherehas(['car' => function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            }])->where('status', '!=', 'pending')->orderby('id', 'desc')->paginate();
+            if ($bookingId = request()->booking_id) {
+                $booking = Booking::with([
+                    'history',
+                    'user',
+                    'car',
+                    'car.images',
+                    'car.carMark',
+                    'car.carModel',
+                    'car.carFuilType',
+                ])->wherehas('car', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })->findOrFail($bookingId);
+            } else {
+                $booking = Booking::with([
+                    'user',
+                    'car',
+                    'car.images',
+                    'car.carMark',
+                    'car.carModel',
+                    'car.carFuilType',
+                ])->wherehas('car', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })->where('status', '!=', 'pending')->orderby('id', 'desc')->paginate();
+            }
         } else {
-            $booking = Booking::with('car')->where('user_id', $user->id)->where('status', '!=', 'pending')->orderby('id', 'desc')->paginate();
+            if ($bookingId = request()->booking_id) {
+                if ($user->role == 'admin') {
+                    $booking = Booking::with([
+                        'history',
+                        'user',
+                        'car',
+                        'car.images',
+                        'car.carMark',
+                        'car.carModel',
+                        'car.carFuilType',
+                    ])->findOrFail($bookingId);
+                } else {
+                    $booking = Booking::with([
+                        'history',
+                        'car',
+                        'car.images',
+                        'car.carMark',
+                        'car.carModel',
+                        'car.carFuilType',
+                    ])->where('user_id', $user->id)->findOrFail($bookingId);
+                }
+            } else {
+                $booking = Booking::with('car.images', 'car.auksion', 'car.carMark', 'car.carModel', 'car.color', 'car.condation', 'car.carBodyType', 'car.carFuilType', 'car.transmission')->where('user_id', $user->id)->orderby('id', 'desc')->paginate();
+            }
         }
         return response()->json($booking);
+    }
+    public function createBooking(CreateBookingRequest $request)
+    {
+        return $this->bookingService->createBookingService($request->validated());
+    }
+    public function bookingSteps(BookingStepRequest $request)
+    {
+        return $this->bookingService->bookingSteps($request->validated());
     }
 }

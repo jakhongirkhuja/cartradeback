@@ -399,7 +399,7 @@ class BookingService
             $bookingHistory->booking_id = $booking_id;
             $bookingHistory->user_id = Auth::id();
             $bookingHistory->save = true;
-            $bookingHistory->step = 1;
+            $bookingHistory->step = 9;
             if ($accept) {
                 $booking->rent_status = 'completed';
                 $booking->save();
@@ -432,7 +432,16 @@ class BookingService
         $accept = $data['accept'];
 
         $bookingHistory = BookingHistory::where('booking_id', $booking_id)->orderby('step', 'desc')->first();
-        if ($bookingHistory == $step - 1) {
+        if ($bookingHistory && $bookingHistory->step == $step) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Этап ужн пройден'
+                ],
+                406
+            );
+        }
+        if ($bookingHistory && $bookingHistory->step  == $step - 1) {
 
             switch ($step) {
                 case 1:

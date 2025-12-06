@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\BookingHistory;
 use App\Models\BookingImage;
 use App\Models\Cars\Car;
+use App\Models\Passport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -113,6 +114,10 @@ class BookingService
     public function createBookingService($data)
     {
 
+        $passport = Passport::where('user_id', Auth::id())->first();
+        if (!$passport) {
+            return response()->json(['error' => 'passport date not exist, update passport info'], 400);
+        }
         try {
             if ($this->checkExistance($data['start_date'], $data['end_date'], $data['car_id'])) {
                 return response()->json([
@@ -441,43 +446,54 @@ class BookingService
                 406
             );
         }
-        if ($bookingHistory && $bookingHistory->step  == $step - 1) {
+        if ($bookingHistory) {
+            if ($bookingHistory->step  == $step - 1) {
 
-            switch ($step) {
-                case 1:
-                    return $this->stepOne($data, $booking_id, $step, $accept);
-                case 2:
-                    return $this->stepTwo($booking_id, $step);
-                case 3:
-                    return $this->stepThree($data, $booking_id, $step, $accept);
-                case 4:
-                    return $this->stepFour($data, $booking_id, $step, $accept);
-                case 5:
-                    return $this->stepFive($data, $booking_id, $step, $accept);
-                case 6:
-                    return $this->stepSix($booking_id, $step);
-                case 7:
-                    return $this->stepSeven($booking_id, $step);
-                case 8:
-                    return $this->stepEight($booking_id, $step);
-                case 9:
-                    return $this->stepNine($data, $booking_id, $step, $accept);
-                default:
-                    # code...
-                    break;
+                switch ($step) {
+                    case 1:
+                        return $this->stepOne($data, $booking_id, $step, $accept);
+                    case 2:
+                        return $this->stepTwo($booking_id, $step);
+                    case 3:
+                        return $this->stepThree($data, $booking_id, $step, $accept);
+                    case 4:
+                        return $this->stepFour($data, $booking_id, $step, $accept);
+                    case 5:
+                        return $this->stepFive($data, $booking_id, $step, $accept);
+                    case 6:
+                        return $this->stepSix($booking_id, $step);
+                    case 7:
+                        return $this->stepSeven($booking_id, $step);
+                    case 8:
+                        return $this->stepEight($booking_id, $step);
+                    case 9:
+                        return $this->stepNine($data, $booking_id, $step, $accept);
+                    default:
+                        # code...
+                        break;
+                }
+                return response()->json(
+                    [
+                        'status' => false,
+                        'message' => 'Что-то пошло не так'
+                    ],
+                    406
+                );
+            } else {
+                return response()->json(
+                    [
+                        'status' => false,
+                        'message' => 'Этапы еще не пройдены'
+                    ],
+                    406
+                );
             }
+        } else {
+            return $this->stepOne($data, $booking_id, $step, $accept);
             return response()->json(
                 [
                     'status' => false,
                     'message' => 'Что-то пошло не так'
-                ],
-                406
-            );
-        } else {
-            return response()->json(
-                [
-                    'status' => false,
-                    'message' => 'Этапы еще не пройдены'
                 ],
                 406
             );

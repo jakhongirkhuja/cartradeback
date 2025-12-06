@@ -27,7 +27,7 @@ class PassportInfoAddRequest extends FormRequest
             'passport_given'   => 'required|date',
             'passport_inn'     => 'required|digits_between:10,14',
             'passport_number'  => 'required|string|max:50',
-            'passport_photo'   => 'required|image|mimes:jpg,jpeg,png|max:3072',
+            'passport_photo'   => 'required|file|mimes:jpg,jpeg,png,pdf|max:3072',
         ];
     }
 }

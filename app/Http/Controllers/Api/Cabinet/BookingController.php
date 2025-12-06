@@ -10,6 +10,8 @@ use App\Http\Requests\CreateBookingRequest;
 use App\Http\Requests\SignatureRequest;
 use App\Models\Booking;
 use App\Models\Cars\Car;
+use App\Models\Passport;
+use App\Models\User;
 use App\Services\Cabinet\BookingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -86,6 +88,7 @@ class BookingController extends Controller
                     'history',
                     'user',
                     'car',
+                    'car.color',
                     'car.images',
                     'car.carMark',
                     'car.carModel',
@@ -97,6 +100,7 @@ class BookingController extends Controller
                 $booking = Booking::with([
                     'user',
                     'car',
+                    'car.color',
                     'car.images',
                     'car.carMark',
                     'car.carModel',
@@ -112,6 +116,8 @@ class BookingController extends Controller
                         'history',
                         'user',
                         'car',
+                        'car.user',
+                        'car.color',
                         'car.images',
                         'car.carMark',
                         'car.carModel',
@@ -121,6 +127,8 @@ class BookingController extends Controller
                     $booking = Booking::with([
                         'history',
                         'car',
+                        'car.user',
+                        'car.color',
                         'car.images',
                         'car.carMark',
                         'car.carModel',
